@@ -20,6 +20,7 @@ const ThreadsTabs = async ({
 	} else {
 		result = await fetchUserPosts(accountId);
 	}
+	console.log(result);
 	// TODO: fetch profile threads
 	if (!result) redirect("/");
 	return (

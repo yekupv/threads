@@ -1,6 +1,8 @@
 import { formatDateString } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "../ui/button";
+import DeleteThread from "../forms/DeleteThread";
 
 interface Props {
 	id: string;
@@ -51,11 +53,17 @@ const ThreadCard = ({
 						<div className="thread-card_bar" />
 					</div>
 					<div className="flex w-full flex-col">
-						<Link href={`/profile/${author.id}`} className="w-fit">
-							<h4 className="cursor-pointer text-base-semibold text-light-1">
-								{author.name}
-							</h4>
-						</Link>
+						<div className="flex flex-row items-center ">
+							<Link href={`/profile/${author.id}`} className="w-fit">
+								<h4 className="cursor-pointer text-base-semibold text-light-1">
+									{author.name}
+								</h4>
+							</Link>
+
+							<p className="text-subtle-medium text-gray-1 mt-1 ml-3">
+								{formatDateString(createdAt)}
+							</p>
+						</div>
 
 						<p className="mt-2 text-smal-regular text-light-2">{content}</p>
 
@@ -96,7 +104,9 @@ const ThreadCard = ({
 							{isComment && comments.length > 0 && (
 								<Link href={`/thread/${id}`}>
 									<p className="mt-1 text-subtle-medium text-gray-1">
-										{comments.length} replies
+										{comments.length == 1
+											? `1 reply`
+											: `${comments.length} replies`}
 									</p>
 								</Link>
 							)}
@@ -104,6 +114,14 @@ const ThreadCard = ({
 					</div>
 				</div>
 				{/* DELETE THREAD */}
+
+				<DeleteThread
+					threadId={JSON.stringify(id)}
+					currentUserId={currentUserId}
+					authorId={author.id}
+					parentId={parentId}
+					isComment={isComment}
+				/>
 				{/* SHOW COMMENT LOGOS */}
 			</div>
 			{!isComment && community && (
@@ -112,7 +130,7 @@ const ThreadCard = ({
 					className="mt-5 flex items-center"
 				>
 					<p className="text-subtle-medium text-gray-1">
-						{formatDateString(createdAt)}- {community.name} Community
+						{community.name} Community
 					</p>
 
 					<Image
@@ -123,6 +141,24 @@ const ThreadCard = ({
 						className="ml-1 rounded-full object-cover"
 					/>
 				</Link>
+			)}
+			{comments.length > 0 && !isComment && (
+				<div className="flex items-center mt-5">
+					{comments.map((comments, index) => (
+						<Image
+							key={`${comments.author.image} + index`}
+							src={comments.author.image}
+							alt={`user_${index}`}
+							width={28}
+							height={28}
+							className={`${index !== 0 && "-ml-2"} rounded-full object-cover`}
+						/>
+					))}
+
+					<p className="ml-1 text-subtle-medium text-gray-1">
+						{comments.length == 1 ? `1 reply` : `${comments.length} replies`}
+					</p>
+				</div>
 			)}
 		</article>
 	);

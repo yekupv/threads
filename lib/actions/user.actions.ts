@@ -140,13 +140,13 @@ export async function fetchUsers({
 
 		// Count the total number of users that match the search criteria (without pagination).
 		const totalUsersCount = await User.countDocuments(query);
-
 		const users = await usersQuery.exec();
 
 		// Check if there are more users beyond the current page.
 		const isNext = totalUsersCount > skipAmount + users.length;
+		const totalPages = Math.ceil(totalUsersCount / pageSize);
 
-		return { users, isNext };
+		return { users, isNext, totalPages };
 	} catch (error) {
 		console.error("Error fetching users:", error);
 		throw error;

@@ -84,6 +84,11 @@ export async function fetchCommunityPosts(id: string) {
 					select: "name image id", // Select the "name" and "_id" fields from the "User" model
 				},
 				{
+					path: "community",
+					model: Community,
+					select: "name image",
+				},
+				{
 					path: "children",
 					model: Thread,
 					populate: {
@@ -139,20 +144,19 @@ export async function fetchCommunities({
 
 		// Create a query to fetch the communities based on the search and sort criteria.
 		const communitiesQuery = Community.find(query)
-			.sort(sortOptions)
 			.skip(skipAmount)
 			.limit(pageSize)
 			.populate("members");
 
 		// Count the total number of communities that match the search criteria (without pagination).
 		const totalCommunitiesCount = await Community.countDocuments(query);
-
+		const totalPages = Math.ceil(totalCommunitiesCount / pageSize);
 		const communities = await communitiesQuery.exec();
 
 		// Check if there are more communities beyond the current page.
 		const isNext = totalCommunitiesCount > skipAmount + communities.length;
 
-		return { communities, isNext };
+		return { communities, isNext, totalPages };
 	} catch (error) {
 		console.error("Error fetching communities:", error);
 		throw error;
