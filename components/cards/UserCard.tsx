@@ -13,7 +13,10 @@ interface Props {
 const UserCard = ({ id, name, username, imgUrl, personType }: Props) => {
 	const router = useRouter();
 	return (
-		<article className="user-card">
+		<article
+			className="user-card "
+			onClick={() => router.push(`/profile/${id}`)}
+		>
 			<div className="user-card_avatar">
 				<Image
 					src={imgUrl}
