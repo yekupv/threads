@@ -8,7 +8,13 @@ import User from "../models/user.model";
 import Thread from "../models/thread.model";
 import Community from "../models/community.model";
 
-export async function fetchPosts(pageNumber = 1, pageSize = 20) {
+export async function fetchPosts({
+	pageNumber,
+	pageSize,
+}: {
+	pageNumber: number;
+	pageSize: number;
+}) {
 	connectToDB();
 
 	// Calculate the number of posts to skip based on the page number and page size.
@@ -41,11 +47,12 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
 		parentId: { $in: [null, undefined] },
 	}); // Get the total count of posts
 
+	const totalPages = Math.ceil(totalPostsCount / pageSize);
 	const posts = await postsQuery.exec();
 
 	const isNext = totalPostsCount > skipAmount + posts.length;
 
-	return { posts, isNext };
+	return { posts, isNext, totalPages };
 }
 
 interface Params {

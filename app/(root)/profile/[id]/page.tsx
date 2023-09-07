@@ -27,21 +27,28 @@ const Page = async ({ params }: { params: { id: string } }) => {
 				username={userInfo.username}
 				imgUrl={userInfo.image}
 				bio={userInfo.bio}
+				type="User"
 			/>
 
 			<div className="mt-9">
 				<Tabs defaultValue="threads" className="w-full">
 					<TabsList className="tab">
 						{profileTabs.map((tab) => (
-							<TabsTrigger key={tab.label} value={tab.value} className="tab">
+							<TabsTrigger
+								key={tab.label}
+								value={tab.value}
+								className="tab group"
+							>
 								<Image
 									src={tab.icon}
 									alt={tab.label}
 									width={24}
 									height={24}
-									className="object-contain"
+									className="object-contain group-hover:scale-105"
 								/>
-								<p className="max-sm:hidden">{tab.label}</p>
+								<p className="max-sm:hidden group-hover:scale-105">
+									{tab.label}
+								</p>
 
 								{tab.label === "Threads" && (
 									<p className="ml-1 rounded-sm bg-light-4 px-2 py-1 !text-tiny-medium text-light-2">

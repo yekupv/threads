@@ -1,12 +1,20 @@
 //app/page.tsx
 
 import ThreadCard from "@/components/cards/ThreadCard";
+import Pagination from "@/components/shared/Pagination";
 import { fetchPosts } from "@/lib/actions/thread.actions";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
-export default async function Home() {
-	const result = await fetchPosts(1, 25);
+export default async function Home({
+	searchParams,
+}: {
+	searchParams: { [key: string]: string | undefined };
+}) {
+	const result = await fetchPosts({
+		pageNumber: searchParams?.page ? +searchParams.page : 1,
+		pageSize: 2,
+	});
 	const user = await currentUser();
 	if (!user) redirect("/sign-in");
 	return (
@@ -32,6 +40,14 @@ export default async function Home() {
 						))}
 					</>
 				)}
+
+				<Pagination
+					path=""
+					pageNumber={searchParams?.page ? +searchParams.page : 1}
+					totalPages={+result.totalPages}
+					isNext={result.isNext}
+					searchParams={searchParams.q}
+				/>
 			</section>
 		</div>
 	);

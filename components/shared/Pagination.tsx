@@ -39,7 +39,7 @@ function Pagination({
 				}`
 			);
 		} else {
-			router.push(`/${path}`);
+			router.push(`/${path}${searchParams ? `?q=${searchParams}` : ""}`);
 		}
 	};
 
